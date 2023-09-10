@@ -1,681 +1,571 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-        />
-        <title>青空文庫アイトラッキングリーダー</title>
-        <meta
-            name="description"
-            content="Webgazer.jsを利用したアイトラッキングを利用したコンテンツリーダーアプリケーション"
-        />
-        <meta
-            name="themecolor"
-            content="#ffffff"
-        />
-        <!-- CSS -->
-        
-        <!-- Javascript -->
-        <!-- webgazerがnpmパッケージで正常に動作しなかったため -->
-        <script src="./lib/webgazer.js"></script>
-      <script type="module" crossorigin src="/assets/index-5efa6ca3.js"></script>
-      <link rel="stylesheet" href="/assets/index-e810b4a2.css">
-    </head>
-    <body class="p-top t-book-reader">
-        <!-- スプラッシュスクリーン -->
-        <nav class="l-splash-screen">
-            <p class="e-splash-title">青空文庫<br />アイトラッキングリーダー</p>
-            <p class="j-model-loading-status">
-                アイトラッキングモデルを <br />読み込み中...
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>青空文庫アイトラッキングリーダー</title>
+    <meta
+      name="description"
+      content="Webgazer.jsを利用したアイトラッキングを利用したコンテンツリーダーアプリケーション"
+    />
+    <meta name="themecolor" content="#ffffff" />
+    <!-- CSS -->
+
+    <!-- Javascript -->
+    <!-- webgazerがnpmパッケージで正常に動作しなかったため -->
+    <script src="./lib/webgazer.js"></script>
+    <script type="module" crossorigin src="./assets/index-5efa6ca3.js"></script>
+    <link rel="stylesheet" href="./assets/index-e810b4a2.css" />
+  </head>
+  <body class="p-top t-book-reader">
+    <!-- スプラッシュスクリーン -->
+    <nav class="l-splash-screen">
+      <p class="e-splash-title">青空文庫<br />アイトラッキングリーダー</p>
+      <p class="j-model-loading-status">
+        アイトラッキングモデルを <br />読み込み中...
+      </p>
+      <p>
+        <small class="e-cautionary-note">
+          このページ内の処理は、<wbr />すべてお使いのウェブブラウザ上で実行されます。
+          <br />
+          カメラ、視線データがサーバに送信されることはありません。
+        </small>
+      </p>
+    </nav>
+
+    <!-- ヘッダー -->
+    <header class="l-header">
+      <noscript>
+        このページではJavascriptを利用しています。ご利用のブラウザのJavascript設定をオンにしてご利用ください。
+      </noscript>
+      <a href="#main" class="u-visually-hidden">
+        システム設定をスキップしてメインコンテンツまで移動する。
+      </a>
+      <h1 class="e-system-title">青空文庫アイトラッキングリーダー</h1>
+    </header>
+
+    <!-- システム設定ボタン・ダイアログ -->
+    <nav class="l-system-setting">
+      <button class="e-system-navigation-button j-system-setting-button">
+        設定
+      </button>
+
+      <!-- システム設定ダイアログ -->
+      <dialog class="l-system-dialog j-system-setting-dialog">
+        <h2 class="e-dialog-title">設定</h2>
+        <div class="m-dialog-content">
+          <dl class="m-system-setting-list">
+            <div class="m-list-group">
+              <dt class="e-list-group-title">表示設定</dt>
+              <dd class="m-list-group-content">
+                <ul class="m-list">
+                  <li class="m-list-item">
+                    <label for="eyeTrackingPointer" class="e-label">
+                      <input
+                        type="checkbox"
+                        name="eyeTrackingPointer"
+                        id="eyeTrackingPointer"
+                        class="e-input-checkbox"
+                      />
+                      トラッキングポインター
+                    </label>
+                  </li>
+                  <li class="m-list-item">
+                    <label for="cameraPreview" class="e-label">
+                      <input
+                        type="checkbox"
+                        name="cameraPreview"
+                        id="cameraPreview"
+                        class="e-input-checkbox"
+                      />
+                      カメラプレビュー
+                    </label>
+                  </li>
+                  <li class="m-list-item">
+                    <label for="gazeScrollButton" class="e-label">
+                      <input
+                        type="checkbox"
+                        name="gazeScrollButton"
+                        id="gazeScrollButton"
+                        class="e-input-checkbox"
+                      />
+                      視線スクロールマーク
+                    </label>
+                  </li>
+                  <li class="m-list-item">
+                    <label for="splashScreen" class="e-label">
+                      <input
+                        type="checkbox"
+                        name="splashScreen"
+                        id="splashScreen"
+                        class="e-input-checkbox"
+                      />
+                      スプラッシュスクリーン
+                    </label>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+            <div class="m-list-group">
+              <dt class="e-list-group-title">トラッキングモデル</dt>
+              <dd class="m-list-group-content">
+                <ul class="m-list">
+                  <li class="m-list-item">
+                    <button
+                      class="e-button e-button-large j-start-calibration-setting-button"
+                    >
+                      キャリブレーション
+                    </button>
+                  </li>
+                  <li class="m-list-item">
+                    <button class="e-button e-button-large j-calibration-reset">
+                      リセット
+                    </button>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="m-dialog-navigation">
+          <ul class="m-button-group">
+            <li class="m-dialog-navigation-item">
+              <button class="e-button j-system-setting-close-button">
+                閉じる
+              </button>
+            </li>
+          </ul>
+        </div>
+      </dialog>
+
+      <!-- キャリブレーション説明ダイアログ -->
+      <dialog class="l-system-dialog j-calibration-instruction-dialog">
+        <h2 class="e-dialog-title">キャリブレーション</h2>
+        <div class="m-dialog-content">
+          <div class="m-paragraph-group">
+            <p class="e-paragraph">
+              トラッキングモデルのキャリブレーションを実施します。キャリブレーションを行うことで、視線操作の精度を向上することができます。
             </p>
+            <p class="e-paragraph">
+              以下の手順に沿って操作を行なってください。
+            </p>
+          </div>
+          <ol class="m-list">
+            <li class="m-list-item">
+              「次へ」ボタンを押下すると、画面に９個の円が表示されます。
+            </li>
+            <li class="m-list-item">
+              それぞれの円をマウスの場合はクリック、タッチデバイスの場合はタップしてください。
+            </li>
+            <li class="m-list-item">
+              それぞれの円を３回ずつクリック（タップ）して、全ての円を緑色にしてください。
+            </li>
+            <li class="m-list-item">
+              全ての円を3回操作して全て緑色になればキャリブレーション完了です。
+            </li>
+          </ol>
+        </div>
+        <div class="m-dialog-navigation">
+          <ul class="m-button-group">
+            <li class="m-button-group-item">
+              <button class="e-button j-to-calibration-button">次へ</button>
+            </li>
+            <li class="m-button-group-item">
+              <button class="e-text-anchor j-start-without-calibration-button">
+                キャリブレーションせずにスタート
+              </button>
+            </li>
+          </ul>
+        </div>
+      </dialog>
+
+      <!-- キャリブレーションダイアログ -->
+      <dialog class="l-system-dialog l-full-screen-dialog j-calibration-dialog">
+        <h2 class="e-dialog-title">キャリブレーション</h2>
+        <div class="m-dialog-content">
+          <div class="m-paragraph-group">
             <p>
-                <small class="e-cautionary-note">
-                    このページ内の処理は、<wbr />すべてお使いのウェブブラウザ上で実行されます。
-                    <br />
-                    カメラ、視線データがサーバに送信されることはありません。
-                </small>
+              表示された円をそれぞれ3回ずつクリック（タップ）して全ての円の色を緑色にかえてください。
             </p>
-        </nav>
-
-        <!-- ヘッダー -->
-        <header class="l-header">
-            <noscript>
-                このページではJavascriptを利用しています。ご利用のブラウザのJavascript設定をオンにしてご利用ください。
-            </noscript>
-            <a
-                href="#main"
-                class="u-visually-hidden"
-            >
-                システム設定をスキップしてメインコンテンツまで移動する。
-            </a>
-            <h1 class="e-system-title">青空文庫アイトラッキングリーダー</h1>
-        </header>
-
-        <!-- システム設定ボタン・ダイアログ -->
-        <nav class="l-system-setting">
-            <button class="e-system-navigation-button j-system-setting-button">
-                設定
-            </button>
-
-            <!-- システム設定ダイアログ -->
-            <dialog class="l-system-dialog j-system-setting-dialog">
-                <h2 class="e-dialog-title">設定</h2>
-                <div class="m-dialog-content">
-                    <dl class="m-system-setting-list">
-                        <div class="m-list-group">
-                            <dt class="e-list-group-title">表示設定</dt>
-                            <dd class="m-list-group-content">
-                                <ul class="m-list">
-                                    <li class="m-list-item">
-                                        <label
-                                            for="eyeTrackingPointer"
-                                            class="e-label"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="eyeTrackingPointer"
-                                                id="eyeTrackingPointer"
-                                                class="e-input-checkbox"
-                                            />
-                                            トラッキングポインター
-                                        </label>
-                                    </li>
-                                    <li class="m-list-item">
-                                        <label
-                                            for="cameraPreview"
-                                            class="e-label"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="cameraPreview"
-                                                id="cameraPreview"
-                                                class="e-input-checkbox"
-                                            />
-                                            カメラプレビュー
-                                        </label>
-                                    </li>
-                                    <li class="m-list-item">
-                                        <label
-                                            for="gazeScrollButton"
-                                            class="e-label"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="gazeScrollButton"
-                                                id="gazeScrollButton"
-                                                class="e-input-checkbox"
-                                            />
-                                            視線スクロールマーク
-                                        </label>
-                                    </li>
-                                    <li class="m-list-item">
-                                        <label
-                                            for="splashScreen"
-                                            class="e-label"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name="splashScreen"
-                                                id="splashScreen"
-                                                class="e-input-checkbox"
-                                            />
-                                            スプラッシュスクリーン
-                                        </label>
-                                    </li>
-                                </ul>
-                            </dd>
-                        </div>
-                        <div class="m-list-group">
-                            <dt class="e-list-group-title">
-                                トラッキングモデル
-                            </dt>
-                            <dd class="m-list-group-content">
-                                <ul class="m-list">
-                                    <li class="m-list-item">
-                                        <button
-                                            class="e-button e-button-large j-start-calibration-setting-button"
-                                        >
-                                            キャリブレーション
-                                        </button>
-                                    </li>
-                                    <li class="m-list-item">
-                                        <button
-                                            class="e-button e-button-large j-calibration-reset"
-                                        >
-                                            リセット
-                                        </button>
-                                    </li>
-                                </ul>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-                <div class="m-dialog-navigation">
-                    <ul class="m-button-group">
-                        <li class="m-dialog-navigation-item">
-                            <button
-                                class="e-button j-system-setting-close-button"
-                            >
-                                閉じる
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </dialog>
-
-            <!-- キャリブレーション説明ダイアログ -->
-            <dialog class="l-system-dialog j-calibration-instruction-dialog">
-                <h2 class="e-dialog-title">キャリブレーション</h2>
-                <div class="m-dialog-content">
-                    <div class="m-paragraph-group">
-                        <p class="e-paragraph">
-                            トラッキングモデルのキャリブレーションを実施します。キャリブレーションを行うことで、視線操作の精度を向上することができます。
-                        </p>
-                        <p class="e-paragraph">
-                            以下の手順に沿って操作を行なってください。
-                        </p>
-                    </div>
-                    <ol class="m-list">
-                        <li class="m-list-item">
-                            「次へ」ボタンを押下すると、画面に９個の円が表示されます。
-                        </li>
-                        <li class="m-list-item">
-                            それぞれの円をマウスの場合はクリック、タッチデバイスの場合はタップしてください。
-                        </li>
-                        <li class="m-list-item">
-                            それぞれの円を３回ずつクリック（タップ）して、全ての円を緑色にしてください。
-                        </li>
-                        <li class="m-list-item">
-                            全ての円を3回操作して全て緑色になればキャリブレーション完了です。
-                        </li>
-                    </ol>
-                </div>
-                <div class="m-dialog-navigation">
-                    <ul class="m-button-group">
-                        <li class="m-button-group-item">
-                            <button class="e-button j-to-calibration-button">
-                                次へ
-                            </button>
-                        </li>
-                        <li class="m-button-group-item">
-                            <button
-                                class="e-text-anchor j-start-without-calibration-button"
-                            >
-                                キャリブレーションせずにスタート
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </dialog>
-
-            <!-- キャリブレーションダイアログ -->
-            <dialog
-                class="l-system-dialog l-full-screen-dialog j-calibration-dialog"
-            >
-                <h2 class="e-dialog-title">キャリブレーション</h2>
-                <div class="m-dialog-content">
-                    <div class="m-paragraph-group">
-                        <p>
-                            表示された円をそれぞれ3回ずつクリック（タップ）して全ての円の色を緑色にかえてください。
-                        </p>
-                    </div>
-                    <div class="m-calibration-pad">
-                        <!-- <h3 class="e-dialog-section-title">
+          </div>
+          <div class="m-calibration-pad">
+            <!-- <h3 class="e-dialog-section-title">
                             <span class="j-calibration-count">1</span>周目
                         </h3> -->
-                        <div class="m-calibration-matrix">
-                            <ul class="m-calibration-row">
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                            </ul>
-                            <ul class="m-calibration-row">
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                            </ul>
-                            <ul class="m-calibration-row">
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                                <li class="m-calibration-cell">
-                                    <input
-                                        type="checkbox"
-                                        class="e-calibration-button j-calibration-pointer"
-                                    />
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="m-dialog-navigation">
-                    <ul class="m-button-group">
-                        <li class="m-button-group-item">
-                            <button
-                                class="e-button j-calibration-setting-close-button"
-                                disabled
-                            >
-                                次へ
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </dialog>
-        </nav>
+            <div class="m-calibration-matrix">
+              <ul class="m-calibration-row">
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+              </ul>
+              <ul class="m-calibration-row">
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+              </ul>
+              <ul class="m-calibration-row">
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+                <li class="m-calibration-cell">
+                  <input
+                    type="checkbox"
+                    class="e-calibration-button j-calibration-pointer"
+                  />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="m-dialog-navigation">
+          <ul class="m-button-group">
+            <li class="m-button-group-item">
+              <button
+                class="e-button j-calibration-setting-close-button"
+                disabled
+              >
+                次へ
+              </button>
+            </li>
+          </ul>
+        </div>
+      </dialog>
+    </nav>
 
-        <!-- メインコンテンツ（作品）エリア -->
-        <main
-            id="main"
-            class="l-main"
+    <!-- メインコンテンツ（作品）エリア -->
+    <main id="main" class="l-main">
+      <h2 class="e-main-title u-visually-hidden">作品</h2>
+      <section class="m-literary-work-content">
+        <div class="m-literary-work-info">
+          <h3 class="e-literary-work-title">蜘蛛の糸</h3>
+          <dl class="m-literary-work-meta-data">
+            <div class="m-list-group">
+              <dt class="e-list-title">著者</dt>
+              <dd class="e-list-item">芥川龍之介</dd>
+            </div>
+          </dl>
+        </div>
+        <blockquote
+          class="m-literary-work-text"
+          cite="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjP1MuKi5OBAxXIUt4KHagED84QFnoECBQQAQ&url=https%3A%2F%2Fwww.aozora.gr.jp%2Fcards%2F000879%2Ffiles%2F92_14545.html&usg=AOvVaw3ycw9ggCvtQ-Adcd3kmQiD&opi=89978449"
         >
-            <h2 class="e-main-title u-visually-hidden">作品</h2>
-            <section class="m-literary-work-content">
-                <div class="m-literary-work-info">
-                    <h3 class="e-literary-work-title">蜘蛛の糸</h3>
-                    <dl class="m-literary-work-meta-data">
-                        <div class="m-list-group">
-                            <dt class="e-list-title">著者</dt>
-                            <dd class="e-list-item">芥川龍之介</dd>
-                        </div>
-                    </dl>
-                </div>
-                <blockquote
-                    class="m-literary-work-text"
-                    cite="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjP1MuKi5OBAxXIUt4KHagED84QFnoECBQQAQ&url=https%3A%2F%2Fwww.aozora.gr.jp%2Fcards%2F000879%2Ffiles%2F92_14545.html&usg=AOvVaw3ycw9ggCvtQ-Adcd3kmQiD&opi=89978449"
-                >
-                    <div>
-                        <h4 class="naka-midashi">
-                            <a>一</a>
-                        </h4>
-                        　ある日の事でございます。<ruby
-                            ><rb>御釈迦様</rb><rp>（</rp><rt>おしゃかさま</rt
-                            ><rp>）</rp></ruby
-                        >は極楽の<ruby
-                            ><rb>蓮池</rb><rp>（</rp><rt>はすいけ</rt
-                            ><rp>）</rp></ruby
-                        >のふちを、独りでぶらぶら御歩きになっていらっしゃいました。池の中に咲いている<ruby
-                            ><rb>蓮</rb><rp>（</rp><rt>はす</rt
-                            ><rp>）</rp></ruby
-                        >の花は、みんな玉のようにまっ白で、そのまん中にある<ruby
-                            ><rb>金色</rb><rp>（</rp><rt>きんいろ</rt
-                            ><rp>）</rp></ruby
-                        >の<ruby
-                            ><rb>蕊</rb><rp>（</rp><rt>ずい</rt
-                            ><rp>）</rp></ruby
-                        >からは、何とも云えない<ruby
-                            ><rb>好</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby
-                        >い<ruby
-                            ><rb>匂</rb><rp>（</rp><rt>におい</rt
-                            ><rp>）</rp></ruby
-                        >が、<ruby
-                            ><rb>絶間</rb><rp>（</rp><rt>たえま</rt
-                            ><rp>）</rp></ruby
-                        >なくあたりへ<ruby
-                            ><rb>溢</rb><rp>（</rp><rt>あふ</rt
-                            ><rp>）</rp></ruby
-                        >れて居ります。極楽は丁度朝なのでございましょう。<br />
-                        　やがて御釈迦様はその池のふちに<ruby
-                            ><rb>御佇</rb><rp>（</rp><rt>おたたず</rt
-                            ><rp>）</rp></ruby
-                        >みになって、水の<ruby
-                            ><rb>面</rb><rp>（</rp><rt>おもて</rt
-                            ><rp>）</rp></ruby
-                        >を<ruby
-                            ><rb>蔽</rb><rp>（</rp><rt>おお</rt
-                            ><rp>）</rp></ruby
-                        >っている蓮の葉の間から、ふと下の<ruby
-                            ><rb>容子</rb><rp>（</rp><rt>ようす</rt
-                            ><rp>）</rp></ruby
-                        >を御覧になりました。この極楽の蓮池の下は、丁度<ruby
-                            ><rb>地獄</rb><rp>（</rp><rt>じごく</rt
-                            ><rp>）</rp></ruby
-                        >の底に当って居りますから、<ruby
-                            ><rb>水晶</rb><rp>（</rp><rt>すいしよう</rt
-                            ><rp>）</rp></ruby
-                        >のような水を透き徹して、<ruby
-                            ><rb>三途</rb><rp>（</rp><rt>さんず</rt
-                            ><rp>）</rp></ruby
-                        >の河や針の山の景色が、丁度<ruby
-                            ><rb>覗</rb><rp>（</rp><rt>のぞ</rt
-                            ><rp>）</rp></ruby
-                        >き<ruby
-                            ><rb>眼鏡</rb><rp>（</rp><rt>めがね</rt
-                            ><rp>）</rp></ruby
-                        >を見るように、はっきりと見えるのでございます。<br />
-                        　するとその地獄の底に、<ruby
-                            ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt
-                            ><rp>）</rp></ruby
-                        >と云う男が一人、ほかの罪人と一しょに<ruby
-                            ><rb>蠢</rb><rp>（</rp><rt>うごめ</rt
-                            ><rp>）</rp></ruby
-                        >いている姿が、御眼に止まりました。この陀多と云う男は、人を殺したり家に火をつけたり、いろいろ悪事を働いた大泥坊でございますが、それでもたった一つ、善い事を致した覚えがございます。と申しますのは、ある時この男が深い林の中を通りますと、小さな<ruby
-                            ><rb>蜘蛛</rb><rp>（</rp><rt>くも</rt
-                            ><rp>）</rp></ruby
-                        >が一匹、路ばたを<ruby
-                            ><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby
-                        >って行くのが見えました。そこで陀多は早速足を挙げて、踏み殺そうと致しましたが、「いや、いや、これも小さいながら、命のあるものに違いない。その命を<ruby
-                            ><rb>無暗</rb><rp>（</rp><rt>むやみ</rt
-                            ><rp>）</rp></ruby
-                        >にとると云う事は、いくら何でも可哀そうだ。」と、こう急に思い返して、とうとうその蜘蛛を殺さずに助けてやったからでございます。<br />
-                        　御釈迦様は地獄の容子を御覧になりながら、この陀多には蜘蛛を助けた事があるのを御思い出しになりました。そうしてそれだけの善い事をした<ruby
-                            ><rb>報</rb><rp>（</rp><rt>むくい</rt
-                            ><rp>）</rp></ruby
-                        >には、出来るなら、この男を地獄から救い出してやろうと御考えになりました。幸い、側を見ますと、<ruby
-                            ><rb>翡翠</rb><rp>（</rp><rt>ひすい</rt
-                            ><rp>）</rp></ruby
-                        >のような色をした蓮の葉の上に、極楽の蜘蛛が一匹、美しい銀色の糸をかけて居ります。御釈迦様はその蜘蛛の糸をそっと御手に御取りになって、玉のような<ruby
-                            ><rb>白蓮</rb><rp>（</rp><rt>しらはす</rt
-                            ><rp>）</rp></ruby
-                        >の間から、遥か下にある地獄の底へ、まっすぐにそれを御<ruby
-                            ><rb>下</rb><rp>（</rp><rt>おろ</rt
-                            ><rp>）</rp></ruby
-                        >しなさいました。<br />
-                        <br />
-                        <h4 class="naka-midashi">
-                            <a
-                                class="midashi_anchor"
-                                id="midashi20"
-                                >二</a
-                            >
-                        </h4>
-                        <br />
-                        　こちらは地獄の底の血の池で、ほかの罪人と一しょに、浮いたり沈んだりしていた<ruby
-                            ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt
-                            ><rp>）</rp></ruby
-                        >でございます。何しろどちらを見ても、まっ暗で、たまにそのくら暗からぼんやり浮き上っているものがあると思いますと、それは恐しい針の山の針が光るのでございますから、その心細さと云ったらございません。その上あたりは墓の中のようにしんと静まり返って、たまに聞えるものと云っては、ただ罪人がつく<ruby
-                            ><rb>微</rb><rp>（</rp><rt>かすか</rt
-                            ><rp>）</rp></ruby
-                        >な<ruby
-                            ><rb>嘆息</rb><rp>（</rp><rt>たんそく</rt
-                            ><rp>）</rp></ruby
-                        >ばかりでございます。これはここへ落ちて来るほどの人間は、もうさまざまな地獄の<ruby
-                            ><rb>責苦</rb><rp>（</rp><rt>せめく</rt
-                            ><rp>）</rp></ruby
-                        >に疲れはてて、泣声を出す力さえなくなっているのでございましょう。ですからさすが大泥坊の陀多も、やはり血の池の血に<ruby
-                            ><rb>咽</rb><rp>（</rp><rt>むせ</rt
-                            ><rp>）</rp></ruby
-                        >びながら、まるで死にかかった<ruby
-                            ><rb>蛙</rb><rp>（</rp><rt>かわず</rt
-                            ><rp>）</rp></ruby
-                        >のように、ただもがいてばかり居りました。<br />
-                        　ところがある時の事でございます。
-                        <ruby
-                            ><rb>何気</rb><rp>（</rp><rt>なにげ</rt
-                            ><rp>）</rp></ruby
-                        >
-                        なく陀多が頭を挙げて、血の池の空を眺めますと、そのひっそりとした暗の中を、遠い遠い天上から、銀色の<ruby
-                            ><rb>蜘蛛</rb><rp>（</rp><rt>くも</rt
-                            ><rp>）</rp></ruby
-                        >の糸が、まるで人目にかかるのを恐れるように、一すじ細く光りながら、するすると自分の上へ垂れて参るのではございませんか。陀多はこれを見ると、思わず手を<ruby
-                            ><rb>拍</rb><rp>（</rp><rt>う</rt><rp>）</rp></ruby
-                        >って喜びました。この糸に<ruby
-                            ><rb>縋</rb><rp>（</rp><rt>すが</rt
-                            ><rp>）</rp></ruby
-                        >りついて、どこまでものぼって行けば、きっと地獄からぬけ出せるのに相違ございません。いや、うまく行くと、極楽へはいる事さえも出来ましょう。そうすれば、もう針の山へ追い上げられる事もなくなれば、血の池に沈められる事もある筈はございません。<br />
-                        　こう思いましたから<ruby
-                            ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt
-                            ><rp>）</rp></ruby
-                        >は、早速その蜘蛛の糸を両手でしっかりとつかみながら、一生懸命に上へ上へとたぐりのぼり始めました。元より大泥坊の事でございますから、こう云う事には昔から、慣れ切っているのでございます。<br />
-                        　しかし地獄と極楽との間は、何万里となくございますから、いくら<ruby
-                            ><rb>焦</rb><rp>（</rp><rt>あせ</rt
-                            ><rp>）</rp></ruby
-                        >って見た所で、容易に上へは出られません。ややしばらくのぼる<ruby
-                            ><rb>中</rb><rp>（</rp><rt>うち</rt
-                            ><rp>）</rp></ruby
-                        >に、とうとう陀多もくたびれて、もう一たぐりも上の方へはのぼれなくなってしまいました。そこで仕方がございませんから、まず一休み休むつもりで、糸の中途にぶら下りながら、遥かに目の下を見下しました。<br />
-                        　すると、一生懸命にのぼった甲斐があって、さっきまで自分がいた血の池は、今ではもう暗の底にいつの間にかかくれて居ります。それからあのぼんやり光っている恐しい針の山も、足の下になってしまいました。この分でのぼって行けば、地獄からぬけ出すのも、存外わけがないかも知れません。陀多は両手を蜘蛛の糸にからみながら、ここへ来てから何年にも出した事のない声で、「しめた。しめた。」と笑いました。ところがふと気がつきますと、蜘蛛の糸の下の方には、<ruby
-                            ><rb>数限</rb><rp>（</rp><rt>かずかぎり</rt
-                            ><rp>）</rp></ruby
-                        >もない罪人たちが、自分ののぼった後をつけて、まるで<ruby
-                            ><rb>蟻</rb><rp>（</rp><rt>あり</rt
-                            ><rp>）</rp></ruby
-                        >の行列のように、やはり上へ上へ一心によじのぼって来るではございませんか。陀多はこれを見ると、驚いたのと恐しいのとで、しばらくはただ、<ruby
-                            ><rb>莫迦</rb><rp>（</rp><rt>ばか</rt
-                            ><rp>）</rp></ruby
-                        >のように大きな口を<ruby
-                            ><rb>開</rb><rp>（</rp><rt>あ</rt><rp>）</rp></ruby
-                        >いたまま、眼ばかり動かして居りました。自分一人でさえ<ruby
-                            ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
-                        >れそうな、この細い蜘蛛の糸が、どうしてあれだけの<ruby
-                            ><rb>人数</rb><rp>（</rp><rt>にんず</rt
-                            ><rp>）</rp></ruby
-                        >の重みに堪える事が出来ましょう。もし万一途中で<ruby
-                            ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
-                        >れたと致しましたら、折角ここへまでのぼって来たこの<ruby
-                            ><rb>肝腎</rb><rp>（</rp><rt>かんじん</rt
-                            ><rp>）</rp></ruby
-                        >な自分までも、元の地獄へ<ruby
-                            ><rb>逆落</rb><rp>（</rp><rt>さかおと</rt
-                            ><rp>）</rp></ruby
-                        >しに落ちてしまわなければなりません。そんな事があったら、大変でございます。が、そう云う中にも、罪人たちは何百となく何千となく、まっ暗な血の池の底から、うようよと<ruby
-                            ><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby
-                        >い上って、細く光っている蜘蛛の糸を、一列になりながら、せっせとのぼって参ります。今の中にどうかしなければ、糸はまん中から二つに断れて、落ちてしまうのに違いありません。<br />
-                        　そこで陀多は大きな声を出して、「こら、罪人ども。この蜘蛛の糸は<ruby
-                            ><rb>己</rb><rp>（</rp><rt>おれ</rt
-                            ><rp>）</rp></ruby
-                        >のものだぞ。お前たちは一体誰に<ruby
-                            ><rb>尋</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
-                        >いて、のぼって来た。下りろ。下りろ。」と<ruby
-                            ><rb>喚</rb><rp>（</rp><rt>わめ</rt
-                            ><rp>）</rp></ruby
-                        >きました。<br />
-                        　その途端でございます。今まで何ともなかった蜘蛛の糸が、急に陀多のぶら下っている所から、ぷつりと音を立てて<ruby
-                            ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
-                        >れました。ですから陀多もたまりません。あっと云う<ruby
-                            ><rb>間</rb><rp>（</rp><rt>ま</rt><rp>）</rp></ruby
-                        >もなく風を切って、<ruby
-                            ><rb>独楽</rb><rp>（</rp><rt>こま</rt
-                            ><rp>）</rp></ruby
-                        >のようにくるくるまわりながら、見る見る中に暗の底へ、まっさかさまに落ちてしまいました。<br />
-                        　後にはただ極楽の蜘蛛の糸が、きらきらと細く光りながら、月も星もない空の中途に、短く垂れているばかりでございます。<br />
-                        <br />
-                        <h4 class="naka-midashi">
-                            <a
-                                class="midashi_anchor"
-                                id="midashi30"
-                                >三</a
-                            >
-                        </h4>
-                        <br />
-                        　<ruby
-                            ><rb>御釈迦様</rb><rp>（</rp><rt>おしゃかさま</rt
-                            ><rp>）</rp></ruby
-                        >は極楽の<ruby
-                            ><rb>蓮池</rb><rp>（</rp><rt>はすいけ</rt
-                            ><rp>）</rp></ruby
-                        >のふちに立って、この一部<ruby
-                            ><rb>始終</rb><rp>（</rp><rt>しじゅう</rt
-                            ><rp>）</rp></ruby
-                        >をじっと見ていらっしゃいましたが、やがて<ruby
-                            ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt
-                            ><rp>）</rp></ruby
-                        >が血の池の底へ石のように沈んでしまいますと、悲しそうな御顔をなさりながら、またぶらぶら御歩きになり始めました。自分ばかり地獄からぬけ出そうとする、陀多の無慈悲な心が、そうしてその心相当な罰をうけて、元の地獄へ落ちてしまったのが、御釈迦様の御目から見ると、浅間しく思召されたのでございましょう。<br />
-                        　しかし極楽の蓮池の蓮は、少しもそんな事には
-                        のまわりに、ゆらゆら<ruby
-                            ><rb>萼</rb><rp>（</rp><rt>うてな</rt
-                            ><rp>）</rp></ruby
-                        >を動かして、そのまん中にある金色の<ruby
-                            ><rb>蕊</rb><rp>（</rp><rt>ずい</rt
-                            ><rp>）</rp></ruby
-                        >からは、何とも云えない<ruby
-                            ><rb>好</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby
-                        >い匂が、<ruby
-                            ><rb>絶間</rb><rp>（</rp><rt>たえま</rt
-                            ><rp>）</rp></ruby
-                        >なくあたりへ<ruby
-                            ><rb>溢</rb><rp>（</rp><rt>あふ</rt
-                            ><rp>）</rp></ruby
-                        >れて居ります。極楽ももう<ruby
-                            ><rb>午</rb><rp>（</rp><rt>ひる</rt
-                            ><rp>）</rp></ruby
-                        >に近くなったのでございましょう。<br />
-                        <div
-                            class="chitsuki_1"
-                            style="text-align: right; margin-right: 1em"
-                        >
-                            （大正七年四月十六日）
-                        </div>
-                    </div>
+          <div>
+            <h4 class="naka-midashi">
+              <a>一</a>
+            </h4>
+            　ある日の事でございます。<ruby
+              ><rb>御釈迦様</rb><rp>（</rp><rt>おしゃかさま</rt
+              ><rp>）</rp></ruby
+            >は極楽の<ruby
+              ><rb>蓮池</rb><rp>（</rp><rt>はすいけ</rt><rp>）</rp></ruby
+            >のふちを、独りでぶらぶら御歩きになっていらっしゃいました。池の中に咲いている<ruby
+              ><rb>蓮</rb><rp>（</rp><rt>はす</rt><rp>）</rp></ruby
+            >の花は、みんな玉のようにまっ白で、そのまん中にある<ruby
+              ><rb>金色</rb><rp>（</rp><rt>きんいろ</rt><rp>）</rp></ruby
+            >の<ruby><rb>蕊</rb><rp>（</rp><rt>ずい</rt><rp>）</rp></ruby
+            >からは、何とも云えない<ruby
+              ><rb>好</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby
+            >い<ruby><rb>匂</rb><rp>（</rp><rt>におい</rt><rp>）</rp></ruby
+            >が、<ruby><rb>絶間</rb><rp>（</rp><rt>たえま</rt><rp>）</rp></ruby
+            >なくあたりへ<ruby
+              ><rb>溢</rb><rp>（</rp><rt>あふ</rt><rp>）</rp></ruby
+            >れて居ります。極楽は丁度朝なのでございましょう。<br />
+            　やがて御釈迦様はその池のふちに<ruby
+              ><rb>御佇</rb><rp>（</rp><rt>おたたず</rt><rp>）</rp></ruby
+            >みになって、水の<ruby
+              ><rb>面</rb><rp>（</rp><rt>おもて</rt><rp>）</rp></ruby
+            >を<ruby><rb>蔽</rb><rp>（</rp><rt>おお</rt><rp>）</rp></ruby
+            >っている蓮の葉の間から、ふと下の<ruby
+              ><rb>容子</rb><rp>（</rp><rt>ようす</rt><rp>）</rp></ruby
+            >を御覧になりました。この極楽の蓮池の下は、丁度<ruby
+              ><rb>地獄</rb><rp>（</rp><rt>じごく</rt><rp>）</rp></ruby
+            >の底に当って居りますから、<ruby
+              ><rb>水晶</rb><rp>（</rp><rt>すいしよう</rt><rp>）</rp></ruby
+            >のような水を透き徹して、<ruby
+              ><rb>三途</rb><rp>（</rp><rt>さんず</rt><rp>）</rp></ruby
+            >の河や針の山の景色が、丁度<ruby
+              ><rb>覗</rb><rp>（</rp><rt>のぞ</rt><rp>）</rp></ruby
+            >き<ruby><rb>眼鏡</rb><rp>（</rp><rt>めがね</rt><rp>）</rp></ruby
+            >を見るように、はっきりと見えるのでございます。<br />
+            　するとその地獄の底に、<ruby
+              ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt><rp>）</rp></ruby
+            >と云う男が一人、ほかの罪人と一しょに<ruby
+              ><rb>蠢</rb><rp>（</rp><rt>うごめ</rt><rp>）</rp></ruby
+            >いている姿が、御眼に止まりました。この陀多と云う男は、人を殺したり家に火をつけたり、いろいろ悪事を働いた大泥坊でございますが、それでもたった一つ、善い事を致した覚えがございます。と申しますのは、ある時この男が深い林の中を通りますと、小さな<ruby
+              ><rb>蜘蛛</rb><rp>（</rp><rt>くも</rt><rp>）</rp></ruby
+            >が一匹、路ばたを<ruby
+              ><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby
+            >って行くのが見えました。そこで陀多は早速足を挙げて、踏み殺そうと致しましたが、「いや、いや、これも小さいながら、命のあるものに違いない。その命を<ruby
+              ><rb>無暗</rb><rp>（</rp><rt>むやみ</rt><rp>）</rp></ruby
+            >にとると云う事は、いくら何でも可哀そうだ。」と、こう急に思い返して、とうとうその蜘蛛を殺さずに助けてやったからでございます。<br />
+            　御釈迦様は地獄の容子を御覧になりながら、この陀多には蜘蛛を助けた事があるのを御思い出しになりました。そうしてそれだけの善い事をした<ruby
+              ><rb>報</rb><rp>（</rp><rt>むくい</rt><rp>）</rp></ruby
+            >には、出来るなら、この男を地獄から救い出してやろうと御考えになりました。幸い、側を見ますと、<ruby
+              ><rb>翡翠</rb><rp>（</rp><rt>ひすい</rt><rp>）</rp></ruby
+            >のような色をした蓮の葉の上に、極楽の蜘蛛が一匹、美しい銀色の糸をかけて居ります。御釈迦様はその蜘蛛の糸をそっと御手に御取りになって、玉のような<ruby
+              ><rb>白蓮</rb><rp>（</rp><rt>しらはす</rt><rp>）</rp></ruby
+            >の間から、遥か下にある地獄の底へ、まっすぐにそれを御<ruby
+              ><rb>下</rb><rp>（</rp><rt>おろ</rt><rp>）</rp></ruby
+            >しなさいました。<br />
+            <br />
+            <h4 class="naka-midashi">
+              <a class="midashi_anchor" id="midashi20">二</a>
+            </h4>
+            <br />
+            　こちらは地獄の底の血の池で、ほかの罪人と一しょに、浮いたり沈んだりしていた<ruby
+              ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt><rp>）</rp></ruby
+            >でございます。何しろどちらを見ても、まっ暗で、たまにそのくら暗からぼんやり浮き上っているものがあると思いますと、それは恐しい針の山の針が光るのでございますから、その心細さと云ったらございません。その上あたりは墓の中のようにしんと静まり返って、たまに聞えるものと云っては、ただ罪人がつく<ruby
+              ><rb>微</rb><rp>（</rp><rt>かすか</rt><rp>）</rp></ruby
+            >な<ruby><rb>嘆息</rb><rp>（</rp><rt>たんそく</rt><rp>）</rp></ruby
+            >ばかりでございます。これはここへ落ちて来るほどの人間は、もうさまざまな地獄の<ruby
+              ><rb>責苦</rb><rp>（</rp><rt>せめく</rt><rp>）</rp></ruby
+            >に疲れはてて、泣声を出す力さえなくなっているのでございましょう。ですからさすが大泥坊の陀多も、やはり血の池の血に<ruby
+              ><rb>咽</rb><rp>（</rp><rt>むせ</rt><rp>）</rp></ruby
+            >びながら、まるで死にかかった<ruby
+              ><rb>蛙</rb><rp>（</rp><rt>かわず</rt><rp>）</rp></ruby
+            >のように、ただもがいてばかり居りました。<br />
+            　ところがある時の事でございます。
+            <ruby><rb>何気</rb><rp>（</rp><rt>なにげ</rt><rp>）</rp></ruby>
+            なく陀多が頭を挙げて、血の池の空を眺めますと、そのひっそりとした暗の中を、遠い遠い天上から、銀色の<ruby
+              ><rb>蜘蛛</rb><rp>（</rp><rt>くも</rt><rp>）</rp></ruby
+            >の糸が、まるで人目にかかるのを恐れるように、一すじ細く光りながら、するすると自分の上へ垂れて参るのではございませんか。陀多はこれを見ると、思わず手を<ruby
+              ><rb>拍</rb><rp>（</rp><rt>う</rt><rp>）</rp></ruby
+            >って喜びました。この糸に<ruby
+              ><rb>縋</rb><rp>（</rp><rt>すが</rt><rp>）</rp></ruby
+            >りついて、どこまでものぼって行けば、きっと地獄からぬけ出せるのに相違ございません。いや、うまく行くと、極楽へはいる事さえも出来ましょう。そうすれば、もう針の山へ追い上げられる事もなくなれば、血の池に沈められる事もある筈はございません。<br />
+            　こう思いましたから<ruby
+              ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt><rp>）</rp></ruby
+            >は、早速その蜘蛛の糸を両手でしっかりとつかみながら、一生懸命に上へ上へとたぐりのぼり始めました。元より大泥坊の事でございますから、こう云う事には昔から、慣れ切っているのでございます。<br />
+            　しかし地獄と極楽との間は、何万里となくございますから、いくら<ruby
+              ><rb>焦</rb><rp>（</rp><rt>あせ</rt><rp>）</rp></ruby
+            >って見た所で、容易に上へは出られません。ややしばらくのぼる<ruby
+              ><rb>中</rb><rp>（</rp><rt>うち</rt><rp>）</rp></ruby
+            >に、とうとう陀多もくたびれて、もう一たぐりも上の方へはのぼれなくなってしまいました。そこで仕方がございませんから、まず一休み休むつもりで、糸の中途にぶら下りながら、遥かに目の下を見下しました。<br />
+            　すると、一生懸命にのぼった甲斐があって、さっきまで自分がいた血の池は、今ではもう暗の底にいつの間にかかくれて居ります。それからあのぼんやり光っている恐しい針の山も、足の下になってしまいました。この分でのぼって行けば、地獄からぬけ出すのも、存外わけがないかも知れません。陀多は両手を蜘蛛の糸にからみながら、ここへ来てから何年にも出した事のない声で、「しめた。しめた。」と笑いました。ところがふと気がつきますと、蜘蛛の糸の下の方には、<ruby
+              ><rb>数限</rb><rp>（</rp><rt>かずかぎり</rt><rp>）</rp></ruby
+            >もない罪人たちが、自分ののぼった後をつけて、まるで<ruby
+              ><rb>蟻</rb><rp>（</rp><rt>あり</rt><rp>）</rp></ruby
+            >の行列のように、やはり上へ上へ一心によじのぼって来るではございませんか。陀多はこれを見ると、驚いたのと恐しいのとで、しばらくはただ、<ruby
+              ><rb>莫迦</rb><rp>（</rp><rt>ばか</rt><rp>）</rp></ruby
+            >のように大きな口を<ruby
+              ><rb>開</rb><rp>（</rp><rt>あ</rt><rp>）</rp></ruby
+            >いたまま、眼ばかり動かして居りました。自分一人でさえ<ruby
+              ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
+            >れそうな、この細い蜘蛛の糸が、どうしてあれだけの<ruby
+              ><rb>人数</rb><rp>（</rp><rt>にんず</rt><rp>）</rp></ruby
+            >の重みに堪える事が出来ましょう。もし万一途中で<ruby
+              ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
+            >れたと致しましたら、折角ここへまでのぼって来たこの<ruby
+              ><rb>肝腎</rb><rp>（</rp><rt>かんじん</rt><rp>）</rp></ruby
+            >な自分までも、元の地獄へ<ruby
+              ><rb>逆落</rb><rp>（</rp><rt>さかおと</rt><rp>）</rp></ruby
+            >しに落ちてしまわなければなりません。そんな事があったら、大変でございます。が、そう云う中にも、罪人たちは何百となく何千となく、まっ暗な血の池の底から、うようよと<ruby
+              ><rb>這</rb><rp>（</rp><rt>は</rt><rp>）</rp></ruby
+            >い上って、細く光っている蜘蛛の糸を、一列になりながら、せっせとのぼって参ります。今の中にどうかしなければ、糸はまん中から二つに断れて、落ちてしまうのに違いありません。<br />
+            　そこで陀多は大きな声を出して、「こら、罪人ども。この蜘蛛の糸は<ruby
+              ><rb>己</rb><rp>（</rp><rt>おれ</rt><rp>）</rp></ruby
+            >のものだぞ。お前たちは一体誰に<ruby
+              ><rb>尋</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
+            >いて、のぼって来た。下りろ。下りろ。」と<ruby
+              ><rb>喚</rb><rp>（</rp><rt>わめ</rt><rp>）</rp></ruby
+            >きました。<br />
+            　その途端でございます。今まで何ともなかった蜘蛛の糸が、急に陀多のぶら下っている所から、ぷつりと音を立てて<ruby
+              ><rb>断</rb><rp>（</rp><rt>き</rt><rp>）</rp></ruby
+            >れました。ですから陀多もたまりません。あっと云う<ruby
+              ><rb>間</rb><rp>（</rp><rt>ま</rt><rp>）</rp></ruby
+            >もなく風を切って、<ruby
+              ><rb>独楽</rb><rp>（</rp><rt>こま</rt><rp>）</rp></ruby
+            >のようにくるくるまわりながら、見る見る中に暗の底へ、まっさかさまに落ちてしまいました。<br />
+            　後にはただ極楽の蜘蛛の糸が、きらきらと細く光りながら、月も星もない空の中途に、短く垂れているばかりでございます。<br />
+            <br />
+            <h4 class="naka-midashi">
+              <a class="midashi_anchor" id="midashi30">三</a>
+            </h4>
+            <br />
+            　<ruby
+              ><rb>御釈迦様</rb><rp>（</rp><rt>おしゃかさま</rt
+              ><rp>）</rp></ruby
+            >は極楽の<ruby
+              ><rb>蓮池</rb><rp>（</rp><rt>はすいけ</rt><rp>）</rp></ruby
+            >のふちに立って、この一部<ruby
+              ><rb>始終</rb><rp>（</rp><rt>しじゅう</rt><rp>）</rp></ruby
+            >をじっと見ていらっしゃいましたが、やがて<ruby
+              ><rb>陀多</rb><rp>（</rp><rt>かんだた</rt><rp>）</rp></ruby
+            >が血の池の底へ石のように沈んでしまいますと、悲しそうな御顔をなさりながら、またぶらぶら御歩きになり始めました。自分ばかり地獄からぬけ出そうとする、陀多の無慈悲な心が、そうしてその心相当な罰をうけて、元の地獄へ落ちてしまったのが、御釈迦様の御目から見ると、浅間しく思召されたのでございましょう。<br />
+            　しかし極楽の蓮池の蓮は、少しもそんな事には
+            のまわりに、ゆらゆら<ruby
+              ><rb>萼</rb><rp>（</rp><rt>うてな</rt><rp>）</rp></ruby
+            >を動かして、そのまん中にある金色の<ruby
+              ><rb>蕊</rb><rp>（</rp><rt>ずい</rt><rp>）</rp></ruby
+            >からは、何とも云えない<ruby
+              ><rb>好</rb><rp>（</rp><rt>よ</rt><rp>）</rp></ruby
+            >い匂が、<ruby
+              ><rb>絶間</rb><rp>（</rp><rt>たえま</rt><rp>）</rp></ruby
+            >なくあたりへ<ruby
+              ><rb>溢</rb><rp>（</rp><rt>あふ</rt><rp>）</rp></ruby
+            >れて居ります。極楽ももう<ruby
+              ><rb>午</rb><rp>（</rp><rt>ひる</rt><rp>）</rp></ruby
+            >に近くなったのでございましょう。<br />
+            <div
+              class="chitsuki_1"
+              style="text-align: right; margin-right: 1em"
+            >
+              （大正七年四月十六日）
+            </div>
+          </div>
 
-                    <dl></dl>
-                    <div class="bibliographical_information">
-                        底本：「芥川龍之介全集2」ちくま文庫、筑摩書房<br />
-                        　　　1986（昭和61）年10月28日第1刷発行<br />
-                        　　　1996（平成8）年7月15日第11刷発行<br />
-                        親本：筑摩全集類聚版芥川龍之介全集<br />
-                        　　　1971（昭和46）年3月～11月<br />
-                        入力：平山誠、野口英司<br />
-                        校正：もりみつじゅんじ<br />
-                        1997年11月10日公開<br />
-                        2011年1月28日修正<br />
-                        青空文庫作成ファイル：<br />
-                        このファイルは、インターネットの図書館、<a
-                            href="http://www.aozora.gr.jp/"
-                            >青空文庫（http://www.aozora.gr.jp/）</a
-                        >で作られました。入力、校正、制作にあたったのは、ボランティアの皆さんです。<br />
-                    </div>
-                </blockquote>
-            </section>
-        </main>
+          <dl></dl>
+          <div class="bibliographical_information">
+            底本：「芥川龍之介全集2」ちくま文庫、筑摩書房<br />
+            　　　1986（昭和61）年10月28日第1刷発行<br />
+            　　　1996（平成8）年7月15日第11刷発行<br />
+            親本：筑摩全集類聚版芥川龍之介全集<br />
+            　　　1971（昭和46）年3月～11月<br />
+            入力：平山誠、野口英司<br />
+            校正：もりみつじゅんじ<br />
+            1997年11月10日公開<br />
+            2011年1月28日修正<br />
+            青空文庫作成ファイル：<br />
+            このファイルは、インターネットの図書館、<a
+              href="http://www.aozora.gr.jp/"
+              >青空文庫（http://www.aozora.gr.jp/）</a
+            >で作られました。入力、校正、制作にあたったのは、ボランティアの皆さんです。<br />
+          </div>
+        </blockquote>
+      </section>
+    </main>
 
-        <!-- フッター -->
-        <footer class="l-footer">
-            <dl class="m-system-related-info-list">
-                <div class="m-list-group">
-                    <dt class="e-list-group-title">関連リンク</dt>
-                    <dd class="m-list-group-content">
-                        <dl class="m-list">
-                            <div class="m-list-group">
-                                <dt class="e-list-group-title">
-                                    <a href="https://www.aozora.gr.jp">
-                                        青空文庫
-                                    </a>
-                                </dt>
-                                <dd class="m-list-group-content">
-                                    <ul class="m-list">
-                                        <li class="m-list-item">
-                                            <a
-                                                href="https://www.aozora.gr.jp/cards/000879/card92.html"
-                                                class="e-text-anchor"
-                                            >
-                                                蜘蛛の糸
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </dd>
-                            </div>
-                            <div class="m-list-group">
-                                <dt class="e-list-group-title">
-                                    利用ライブラリ
-                                </dt>
-                                <dd class="m-list-group-content">
-                                    <ul class="m-list">
-                                        <li class="m-list-item">
-                                            <a
-                                                lang="en"
-                                                href="https://webgazer.cs.brown.edu"
-                                                class="e-text-anchor"
-                                            >
-                                                Webgazer.js
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </dd>
-                            </div>
-                            <div class="m-list-group">
-                                <dt class="e-list-group-title">ライセンス</dt>
-                                <dd class="m-list-group-content">
-                                    <ul class="m-list">
-                                        <li class="m-list-item">
-                                            <a
-                                                lang="en"
-                                                href="https://www.gnu.org/licenses/quick-guide-gplv3.ja.html"
-                                                class="e-text-anchor"
-                                            >
-                                                GPLv3
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </dd>
-                            </div>
-                        </dl>
-                    </dd>
-                </div>
+    <!-- フッター -->
+    <footer class="l-footer">
+      <dl class="m-system-related-info-list">
+        <div class="m-list-group">
+          <dt class="e-list-group-title">関連リンク</dt>
+          <dd class="m-list-group-content">
+            <dl class="m-list">
+              <div class="m-list-group">
+                <dt class="e-list-group-title">
+                  <a href="https://www.aozora.gr.jp"> 青空文庫 </a>
+                </dt>
+                <dd class="m-list-group-content">
+                  <ul class="m-list">
+                    <li class="m-list-item">
+                      <a
+                        href="https://www.aozora.gr.jp/cards/000879/card92.html"
+                        class="e-text-anchor"
+                      >
+                        蜘蛛の糸
+                      </a>
+                    </li>
+                  </ul>
+                </dd>
+              </div>
+              <div class="m-list-group">
+                <dt class="e-list-group-title">利用ライブラリ</dt>
+                <dd class="m-list-group-content">
+                  <ul class="m-list">
+                    <li class="m-list-item">
+                      <a
+                        lang="en"
+                        href="https://webgazer.cs.brown.edu"
+                        class="e-text-anchor"
+                      >
+                        Webgazer.js
+                      </a>
+                    </li>
+                  </ul>
+                </dd>
+              </div>
+              <div class="m-list-group">
+                <dt class="e-list-group-title">ライセンス</dt>
+                <dd class="m-list-group-content">
+                  <ul class="m-list">
+                    <li class="m-list-item">
+                      <a
+                        lang="en"
+                        href="https://www.gnu.org/licenses/quick-guide-gplv3.ja.html"
+                        class="e-text-anchor"
+                      >
+                        GPLv3
+                      </a>
+                    </li>
+                  </ul>
+                </dd>
+              </div>
             </dl>
-        </footer>
+          </dd>
+        </div>
+      </dl>
+    </footer>
 
-        <!-- 視線コントロールガイド表示エリア -->
-        <nav class="l-gaze-controller">
-            <ul class="m-gaze-controller">
-                <li class="m-gaze-scroll-button-container j-gaze-target-area">
-                    <button
-                        class="e-gaze-scroll-button u-visually-hidden j-gaze-scroll-up-button"
-                    >
-                        上にスクロール
-                    </button>
-                    <!-- <button
+    <!-- 視線コントロールガイド表示エリア -->
+    <nav class="l-gaze-controller">
+      <ul class="m-gaze-controller">
+        <li class="m-gaze-scroll-button-container j-gaze-target-area">
+          <button
+            class="e-gaze-scroll-button u-visually-hidden j-gaze-scroll-up-button"
+          >
+            上にスクロール
+          </button>
+          <!-- <button
                         class="e-gaze-scroll-button j-gaze-scroll-up-button"
                     >
                         上にスクロール
                     </button> -->
-                </li>
-                <li class="m-gaze-scroll-button-container j-gaze-target-area">
-                    <button
-                        class="e-gaze-scroll-button u-visually-hidden j-gaze-scroll-down-button"
-                    >
-                        下にスクロール
-                    </button>
-                    <!-- <button
+        </li>
+        <li class="m-gaze-scroll-button-container j-gaze-target-area">
+          <button
+            class="e-gaze-scroll-button u-visually-hidden j-gaze-scroll-down-button"
+          >
+            下にスクロール
+          </button>
+          <!-- <button
                         class="e-gaze-scroll-button j-gaze-scroll-down-button"
                     >
                         下にスクロール
                     </button> -->
-                </li>
-            </ul>
-        </nav>
+        </li>
+      </ul>
+    </nav>
 
-        <!-- エントリーポイント -->
-        
-    </body>
+    <!-- エントリーポイント -->
+  </body>
 </html>
